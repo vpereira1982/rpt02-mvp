@@ -1,11 +1,10 @@
 let express = require('express');
 let app = express();
+let path = require('path');
 let routes = require('./controllers/routes');
-var cookieParser = require('cookie-parser');
 let session = require('express-session');
-var FileStore = require('session-file-store')(session);
 
-//add routes & middleware
+// Add routes & middleware
 app.use('/', express.static(__dirname + '/public'));
 app.use('/api', routes);
 
@@ -17,7 +16,7 @@ app.use('*', function(req, res) {
 });
 
 app.listen(port, (err, success) => {
-  err ? console.log('There was an error loading your server') : console.log('The SERVER is up and running');
+  err ? console.log('There was an error loading the server') : console.log('SERVER is live on port: ' + port);
 });
 
 module.exports = app;

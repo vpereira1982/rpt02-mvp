@@ -12,7 +12,14 @@ let obj = {
     }
   },
 
+  getSession: (data, callback) => {
+    if (data.hasOwnProperty('localStorage')) {
+      db.query(`SELECT * FROM users WHERE users.id = '${data.localStorage}'`, callback);
+    }
+  },
+
   post: (data, callback) => {
+    console.log('this is the signup data', data);
     let pwSalt = encrypt.makeSaltSync();
     let pwHashed = encrypt.makeHashPw(data.pw, pwSalt);
 

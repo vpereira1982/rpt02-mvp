@@ -1,58 +1,87 @@
-import React from "react";
-import ReactDOM from "react-dom";
-import $ from 'jquery';
-import App from './index.jsx';
+import React, { Component } from 'react';
+import 'cropperjs/dist/cropper.css';
 
+import Cropper from 'react-cropper';
 
-class Signup extends React.Component {
+/* global FileReader */
+
+const src = 'img/child.jpg';
+
+export default class Demo extends Component {
+
   constructor(props) {
     super(props);
+    this.state = {
+      src,
+      cropResult: null,
+    };
+    this.cropImage = this.cropImage.bind(this);
+    this.onChange = this.onChange.bind(this);
+    this.useDefaultImage = this.useDefaultImage.bind(this);
+  }
+
+  onChange(e) {
+    e.preventDefault();
+    let files;
+    if (e.dataTransfer) {
+      files = e.dataTransfer.files;
+    } else if (e.target) {
+      files = e.target.files;
+    }
+    const reader = new FileReader();
+    reader.onload = () => {
+      this.setState({ src: reader.result });
+    };
+    reader.readAsDataURL(files[0]);
+  }
+
+  cropImage() {
+    if (typeof this.cropper.getCroppedCanvas() === 'undefined') {
+      return;
+    }
+    this.setState({
+      cropResult: this.cropper.getCroppedCanvas().toDataURL(),
+    });
+  }
+
+  useDefaultImage() {
+    this.setState({ src });
   }
 
   render() {
     return (
-      <div className="col-md-4 col-md-offset-4 bg-primary signup">
-        <h2> Sign Up </h2> <br />
-        <form method="POST" encType="multipart/form-data" action="/api" id="postform" autoComplete="off">
-          <div className="form-group">
-            <input autoComplete="off" type="text" className="form-control form-control-lg" id="firstname" placeholder="First Name" required name="firstname"/>
-          </div>
-          <div className="form-group">
-            <input autoComplete="off" type="text" className="form-control form-control-lg" id="lastname" placeholder="Last Name" required name="lastname"/>
-          </div>
-          <div className="form-group">
-            <input autoComplete="off" type="password" className="form-control form-control-lg" id="password" placeholder="Password" required name="pw"/>
-          </div>
-          <div className="form-group">
-            <input autoComplete="off" type="text" className="form-control form-control-lg" id="email" placeholder="Email" required name="email"/>
-          </div>
-          <div className="form-group">
-              <select className="custom-select mb-2 mr-sm-2 mb-sm-0 btn btn-success dropdown-toggle" id="inlineFormCustomSelect" required name="genre">
-                <option selected>Favorite Genre</option>
-                <option value="Blues">Blues</option>
-                <option value="Classical">Classical</option>
-                <option value="Country">Country</option>
-                <option value="Electronic">Electronic</option>
-                <option value="Rock">Rock</option>
-                <option value="Grunge">Grunge</option>
-                <option value="Pop">Pop</option>
-                <option value="Metal">Metal</option>
-                <option value="Jazz">Jazz</option>
-              </select>
-          </div>
-
-
-
-          <div className="form-group">
-            <input type="file" className="form-control form-control-lg" id="file" placeholder="Upload File" required name="file" accept="application/x-zip-compressed,audio/*"/>
-          </div>
+      <div>
+        <div style={{ width: '100%' }}>
+          <input type="file" onChange={this.onChange} />
+          <button onClick={this.useDefaultImage}>Use default img</button>
           <br />
-          <button type="submit" className="btn btn-success">Submit</button>
-        </form>
+          <br />
+          <Cropper
+            style={{ height: 400, width: '100%' }}
+            aspectRatio={16 / 9}
+            preview=".img-preview"
+            guides={false}
+            src={this.state.src}
+            ref={cropper => { this.cropper = cropper; }}
+          />
+        </div>
+        <div>
+          <div className="box" style={{ width: '50%', float: 'right' }}>
+            <h1>Preview</h1>
+            <div className="img-preview" style={{ width: '100%', float: 'left', height: 300 }} />
+          </div>
+          <div className="box" style={{ width: '50%', float: 'right' }}>
+            <h1>
+              <span>Crop</span>
+              <button onClick={this.cropImage} style={{ float: 'right' }}>
+                Crop Image
+              </button>
+            </h1>
+            <img style={{ width: '100%' }} src={this.state.cropResult} alt="cropped image" />
+          </div>
+        </div>
+        <br style={{ clear: 'both' }} />
       </div>
-    )
+    );
   }
 }
-
-
-export default Signup;

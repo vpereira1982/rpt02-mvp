@@ -37,6 +37,13 @@
   margin-left: 15px;
 }
 
+.default-profile {
+  border: solid .7px gray;
+  border-radius: 2px;
+  margin: 1em 0 .5em 0;
+
+}
+
 .username {
   float: right;
   position: relative;
@@ -44,8 +51,8 @@
   left: -15px;
   text-decoration: none;
   color: white;
-/*  border: solid .1px white;
-*/  border-radius: 10%;
+/*  border: solid .1px white; */
+  border-radius: 10%;
   padding: 2px;
 }
 
@@ -59,6 +66,10 @@
 /*  border: solid .1px white;
 */  border-radius: 10%;
   padding: 2px;
+}
+
+img.default-profile {
+  max-width: 100%; /* This rule is very important, please do not ignore this! */
 }
 
 .logout {

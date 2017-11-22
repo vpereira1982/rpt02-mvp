@@ -3,7 +3,6 @@ let model = require('../models/index.js');
 let bodyParser = require('body-parser');
 let encrypt = require('../encryptor/index.js');
 let router = express.Router();
-let cookieParser = require('cookie-parser');
 let session = require('express-session');
 let FileStore = require('session-file-store')(session);
 
@@ -11,7 +10,9 @@ let FileStore = require('session-file-store')(session);
 let multer = require('multer');
 let storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, './public/userfiles')
+
+    // change the below to a dynamic folder using path.join()
+    cb(null, './public/userfiles');
   },
   filename: function (req, file, cb) {
     cb(null, Date.now() + '_'+ file.originalname);
@@ -21,7 +22,6 @@ let upload = multer({'storage': storage}).single('file');
 
 
 // LOAD SESSION SETTINGS
-router.use(cookieParser());
 router.use(session({
   name: 'server-session-cookie-id',
   secret: 'my express secret',
@@ -47,7 +47,6 @@ router.use(function(req, res, next) {
 // GET REQUESTS
 router.get('/login', function(req, res) {
   let queryData = req.query;
-
   model.get(queryData, function(err, data) {
     if (err) throw err;
 
@@ -61,6 +60,16 @@ router.get('/login', function(req, res) {
     }
   });
 });
+
+router.get('/session', function(req, res) {
+  let queryData = req.query;
+  model.getSession(queryData, function(err, data) {
+    if (data.length === 0) {
+      res.status(200).send(false);
+    }
+    res.status(200).send(JSON.stringify(data[0]));
+  });
+})
 
 router.get('/all', function(req, res) {
     let queryData = req.query;

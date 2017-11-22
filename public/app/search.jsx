@@ -14,6 +14,12 @@ class Search extends React.Component {
     event.preventDefault();
   }
 
+  handleLogout() {
+    window.localStorage.setItem("userid", null);
+    location.assign("/");
+    location.reload();
+  }
+
   render() {
     return (
       <nav className="navbar-light text-white bg-primary">
@@ -22,7 +28,7 @@ class Search extends React.Component {
           <form className="form-inline" id="searchbar" onSubmit={this.handleSubmit.bind(this)}>
             <input className="form-control" type="text" size="65" placeholder="Search" id="searchbox" />
             <button className="btn btn-outline-success btn-success ml-2" id="button-search" type="submit">Search</button>
-            <a href="http://localhost:8080" className="logout">Log Out</a>
+            <a href="" className="logout" onClick={this.handleLogout.bind(this)}>Log Out</a>
             <span className="pipe"> | </span>
             <span className="username">{this.props.username}</span>
           </form>

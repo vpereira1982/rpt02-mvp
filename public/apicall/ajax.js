@@ -1,4 +1,4 @@
-window.APIcall =  {
+const APIcall =  {
   fetch: function(data, endpoint, callback) {
     $.ajax({
       type: 'GET',
@@ -23,3 +23,5 @@ window.APIcall =  {
     })
   }
 }
+
+export default APIcall;

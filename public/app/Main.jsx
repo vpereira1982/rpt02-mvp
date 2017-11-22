@@ -4,12 +4,15 @@ import $ from 'jquery';
 import App from './index.jsx';
 import Search from './search.jsx';
 import Results from './results.jsx';
+import APIcall from '../apicall/ajax.js'
 
 class Main extends React.Component {
   constructor(props) {
     super(props);
+    let currentUser = props.username !== undefined ? this.props.username : props.location.state.username;
+
     this.state = {
-      loggeduser: props.location.state.username,
+      loggeduser: currentUser,
       users: []
     };
     window.query = '';
@@ -17,11 +20,11 @@ class Main extends React.Component {
 
   componentDidMount() {
     var data = window.query === '' ? {} : window.query;
-    APIcall.fetch(data,'/api/all', function(data) {
+    APIcall.fetch(data,'/api/all', (data) => {
       this.setState({
         users: JSON.parse(data)
       });
-    }.bind(this));
+    });
   }
 
   handleSearch(query) {
@@ -38,7 +41,7 @@ class Main extends React.Component {
           <Search username={this.state.loggeduser} handleSearch={this.handleSearch.bind(this)} />
         </div>
         <div className="container result">
-          <Results users={this.state.users} test={[1,2,3,4,5]}/>
+          <Results users={this.state.users}/>
         </div>
       </div>
     )

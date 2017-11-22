@@ -4,11 +4,10 @@ import $ from 'jquery';
 import Signup from './Signup.jsx';
 import Main from './Main.jsx';
 import { BrowserRouter, Route, Link, Redirect, withRouter } from 'react-router-dom';
-
+import APIcall from '../apicall/ajax.js';
 import createBrowserHistory from 'history/createBrowserHistory'
 
-const customHistory = createBrowserHistory();
-
+//const customHistory = createBrowserHistory();
 
 class Login extends React.Component {
   constructor(props) {
@@ -26,13 +25,16 @@ class Login extends React.Component {
   }
 
   handleSubmit(e) {
-    var self = this;
     e.preventDefault();
 
-    APIcall.fetch(this.state,'/api/login', function(data) {
+    APIcall.fetch(this.state,'/api/login', (data) => {
       if (data) {
-        data = JSON.parse(data);
-        self.props.history.push({pathname: '/main', state: {username: data.firstname}});
+        let parsedData = JSON.parse(data);
+
+        //CREATES THE USER SESSION
+        window.localStorage.setItem("userid", JSON.stringify(parsedData.id));
+        //REDIRECTS USER TO THE MAIN PAGE
+        self.props.history.push({pathname: '/main', state: {username: parsedData.firstname}});
       } else {
         alert('User name and password do not match. Sign up if you are a new user.');
       }
